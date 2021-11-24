@@ -3,6 +3,8 @@
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
 processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+#pragma warning(disable: 6386)
+
 BOOL
 InsertString(
 	DIGITAL_TREE dt,
@@ -48,6 +50,8 @@ FindString(
 	free(arr);
 	return r;
 }
+
+#pragma warning(default: 6386)
 
 #define BTN_0 1000
 #define BTN_1 1001
