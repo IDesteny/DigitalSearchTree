@@ -10,39 +10,42 @@ DTCreate(
 BOOL
 DTInsert(
 	DIGITAL_TREE dt,
-	PINT data,
+	PCTSTR str,
 	INT size,
-	PBOOL unique)
+	PBOOL uniq)
 {
 	PNODE rootTmp = *dt;
-	INT i = 0;
-	*unique = FALSE;
+	INT i = 0; // Позиция в строке
+	*uniq = FALSE;
 
+	// Если дерево пустое
 	if (!*dt)
 	{
 		*dt = calloc(1, sizeof(NODE));
 		if (!*dt)
 			return EXIT_FAILURE;
 
-		*unique = TRUE;
-		(*(PNODE *)dt)->data = data[i++];
+		*uniq = TRUE;
+		(*(PNODE *)dt)->data = str[i++];
 	}
 
 	PNODE root = *dt;
 
 	for (; i < size && rootTmp; ++i)
 	{
-		if (rootTmp->data == data[i])
+		// Если данные узла совпадают с элементом строки
+		if (rootTmp->data == str[i])
 		{
 			root = rootTmp;
-			rootTmp = rootTmp->down;
+			rootTmp = rootTmp->down; // На уровень ниже
 		}
 		else
 		{
+			// Проход по всему уровню
 			while (rootTmp)
 			{
 				root = rootTmp;
-				if (rootTmp->data == data[i])
+				if (rootTmp->data == str[i])
 				{
 					rootTmp = rootTmp->down;
 					break;
@@ -53,15 +56,15 @@ DTInsert(
 					if (!root->next)
 						return EXIT_FAILURE;
 
-					*unique = TRUE;
+					*uniq = TRUE;
 
 					root = root->next;
-					root->data = data[i];
+					root->data = str[i];
 				}
 			}
 		}
 	}
-
+	
 	if (i >= size && root->down && (!root->down->next || root->down->next->data != INT_MAX))
 	{
 		root = root->down;
@@ -78,7 +81,7 @@ DTInsert(
 			return EXIT_FAILURE;
 
 		root->next->data = INT_MAX;
-		*unique = TRUE;
+		*uniq = TRUE;
 	}
 
 	for (; i < size; ++i)
@@ -88,9 +91,9 @@ DTInsert(
 			return EXIT_FAILURE;
 
 		root = root->down;
-		root->data = data[i];
+		root->data = str[i];
 
-		if (!*unique)
+		if (!*uniq)
 		{
 			root->next = calloc(1, sizeof(NODE));
 			if (!root->next)
@@ -99,7 +102,7 @@ DTInsert(
 			root->next->data = INT_MAX;
 		}
 
-		*unique = TRUE;
+		*uniq = TRUE;
 	}
 
 	return EXIT_SUCCESS;
@@ -108,7 +111,7 @@ DTInsert(
 BOOL
 DTFind(
 	DIGITAL_TREE dt,
-	PINT data,
+	PCTSTR str,
 	INT size,
 	PBOOL res)
 {
@@ -120,13 +123,13 @@ DTFind(
 		if (!root)
 			return EXIT_SUCCESS;
 
-		if (root->data == data[i])
+		if (root->data == str[i])
 			root = root->down;
 		else
 		{
 			while (TRUE)
 			{
-				if (root->data == data[i])
+				if (root->data == str[i])
 				{
 					root = root->down;
 					break;
@@ -148,6 +151,6 @@ DTFind(
 	}
 	else
 		*res = TRUE;
-	
+
 	return EXIT_SUCCESS;
 }

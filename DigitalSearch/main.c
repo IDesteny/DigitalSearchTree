@@ -1,54 +1,20 @@
-#include <windows.h>
-#include <tchar.h>
+#include <windows.h> // Для работы с виндой
+#include <tchar.h> // Для юникода
 #include "DigitalSearch.h"
 
+// Для красоты кнопок
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
 processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+// Идентификаторы кнопок
 #define BTN_0 1000
 #define BTN_1 1001
-#define INPUT_BUFFER_SIZE 32
-#define OUTPUT_BUFFER_SIZE 128
 
-BOOL
-InsertString(
-	DIGITAL_TREE dt,
-	PCTSTR str,
-	PBOOL uniq)
-{
-	INT len = lstrlen(str);
-	PINT arr = malloc(len * sizeof(INT));
-	if (!arr)
-		return EXIT_FAILURE;
+#define INPUT_BUFFER_SIZE 32 // Вместимость поля ввода данных
+#define OUTPUT_BUFFER_SIZE 128 // Вместимость поля вывода данных
 
-	for (INT i = 0; i < len; ++i)
-		arr[i] = str[i];
-
-	BOOL r = DTInsert(dt, arr, len, uniq);
-	free(arr);
-	return r;
-}
-
-BOOL
-FindString(
-	DIGITAL_TREE dt,
-	PCTSTR str,
-	PBOOL res)
-{
-	INT len = lstrlen(str);
-	PINT arr = malloc(len * sizeof(INT));
-	if (!arr)
-		return EXIT_FAILURE;
-
-	for (INT i = 0; i < len; ++i)
-		arr[i] = str[i];
-
-	BOOL r = DTFind(dt, arr, len, res);
-	free(arr);
-	return r;
-}
-
+// Функция обработки событий окна
 LRESULT
 WndProc(
 	HWND hWnd,
@@ -56,11 +22,12 @@ WndProc(
 	WPARAM wParam,
 	LPARAM lParam)
 {
-	static HWND edits[4];
+	static HWND edits[4]; // Объекты полей ввода/вывода
 	static DIGITAL_TREE dt;
 
 	switch (message)
 	{
+		// Разово при открытии окна
 		case WM_CREATE:
 		{
 			dt = DTCreate();
@@ -76,6 +43,7 @@ WndProc(
 			break;
 		}
 
+		// При взаимодействии с окном
 		case WM_COMMAND:
 		{
 			switch (LOWORD(wParam))
@@ -83,25 +51,33 @@ WndProc(
 				case BTN_0:
 				{
 					TCHAR InputBuffer[INPUT_BUFFER_SIZE];
+
+					// Получить данные с поля
 					if (!GetWindowText(edits[0], InputBuffer, INPUT_BUFFER_SIZE))
 					{
+						// Вывести данные в поле
 						SetWindowText(edits[2], _T("Empty line"));
 						break;
 					}
 
-					BOOL unique;
-					if (InsertString(dt, InputBuffer, &unique))
+					BOOL uniq;
+					BOOL status = DTInsert(dt, InputBuffer, lstrlen(InputBuffer), &uniq);
+					if (status)
 					{
 						SetWindowText(edits[2], _T("System error"));
 						break;
 					}
 
-					if (unique)
+					if (uniq)
 					{
 						TCHAR OutputBuffer[OUTPUT_BUFFER_SIZE];
+						// Взять существующие данные поля
 						GetWindowText(edits[3], OutputBuffer, OUTPUT_BUFFER_SIZE);
+
+						// С конкатенировать с новыми данными
 						_tcscat_s(OutputBuffer, OUTPUT_BUFFER_SIZE, InputBuffer);
 						_tcscat_s(OutputBuffer, OUTPUT_BUFFER_SIZE, _T("\r\n"));
+
 						SetWindowText(edits[3], OutputBuffer);
 						SetWindowText(edits[0], NULL);
 						SetWindowText(edits[2], _T("Success"));
@@ -122,7 +98,8 @@ WndProc(
 					}
 					
 					BOOL res;
-					if (FindString(dt, InputBuffer, &res))
+					BOOL status = DTFind(dt, InputBuffer, lstrlen(InputBuffer), &res);
+					if (status)
 					{
 						SetWindowText(edits[2], _T("System error"));
 						break;
@@ -136,6 +113,7 @@ WndProc(
 			break;
 		}
 
+		// При закрытии окна
 		case WM_DESTROY:
 		{
 			PostQuitMessage(EXIT_SUCCESS);
@@ -149,6 +127,7 @@ WndProc(
 	return EXIT_SUCCESS;
 }
 
+// Точка входа
 INT
 _tWinMain(
 	_In_ HINSTANCE hInstance,
@@ -156,12 +135,9 @@ _tWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ INT nCmdShow)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-
 	WNDCLASS wc = { 0 };
 	wc.lpfnWndProc = WndProc;
-	wc.hbrBackground = COLOR_WINDOW + 1;
+	wc.hbrBackground = COLOR_WINDOW + 1; // Цвет фона окна
 	wc.lpszClassName = _T("MainWindow");
 
 	if (!RegisterClass(&wc))
@@ -170,7 +146,7 @@ _tWinMain(
 	HWND hWnd = CreateWindow(
 		wc.lpszClassName,
 		NULL, WS_OVERLAPPEDWINDOW,
-		700, 300, 315, 270,
+		700, 300, 315, 270, // Размеры окна
 		NULL, NULL, hInstance, NULL);
 
 	if (!hWnd)
