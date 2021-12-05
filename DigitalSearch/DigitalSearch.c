@@ -65,7 +65,9 @@ DTInsert(
 		}
 	}
 	
-	if (i >= size && root->down && (!root->down->next || root->down->next->data != INT_MAX))
+	if (i >= size &&
+		root->down &&
+		(!root->down->next || root->down->next->data != INT_MAX))
 	{
 		root = root->down;
 		rootTmp = root;
