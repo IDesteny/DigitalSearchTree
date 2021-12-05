@@ -1,11 +1,7 @@
 #pragma once
-
-#pragma warning(disable: 4668)
 #include <windows.h>
-#pragma warning(default: 4668)
 #include <tchar.h>
 
-#pragma warning(disable: 4820)
 typedef struct _NODE
 {
 	INT data;
@@ -13,7 +9,6 @@ typedef struct _NODE
 	struct _NODE *down;
 
 } NODE, *PNODE;
-#pragma warning(default: 4820)
 
 typedef PVOID *DIGITAL_TREE;
 

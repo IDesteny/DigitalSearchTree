@@ -7,9 +7,6 @@ DTCreate(
 	return calloc(1, sizeof(PNODE));
 }
 
-#pragma warning(disable: 4706)
-#pragma warning(disable: 5045)
-
 BOOL
 DTInsert(
 	DIGITAL_TREE dt,
@@ -107,9 +104,6 @@ DTInsert(
 
 	return EXIT_SUCCESS;
 }
-
-#pragma warning(disable: 5045)
-#pragma warning(default: 4706)
 
 BOOL
 DTFind(
