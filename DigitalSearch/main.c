@@ -98,12 +98,7 @@ WndProc(
 					}
 					
 					BOOL res;
-					BOOL status = DTFind(dt, InputBuffer, lstrlen(InputBuffer), &res);
-					if (status)
-					{
-						SetWindowText(edits[2], _T("System error"));
-						break;
-					}
+					DTFind(dt, InputBuffer, lstrlen(InputBuffer), &res);
 
 					SetWindowText(edits[2], res ? _T("Data found") : _T("Data not found"));
 

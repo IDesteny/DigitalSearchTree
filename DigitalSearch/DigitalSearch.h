@@ -9,8 +9,8 @@ struct _NODE
 	struct _NODE *down; // Указатель на узел нижнего уровня
 };
 
-typedef struct _NODE NODE; // Что б не приходилось писать "struct _NODE"
-typedef NODE *PNODE; // Что б не приходилось писать "NODE *"
+typedef struct _NODE NODE; // Чтобы не приходилось писать "struct _NODE"
+typedef NODE *PNODE; // Чтобы не приходилось писать "NODE *"
 typedef PVOID *DIGITAL_TREE; // "Защита" от несанкционированного доступа
 
 // desc: Создание пустого дерева
@@ -39,9 +39,8 @@ DTInsert(
 // prm-2: Строка
 // prm-3: Длина строки
 // prm-4: Результат поиска (1 - Строка найдена, 0 - Не найдена)
-// ret: Статус отработки функции (0 - Success; 1 - Failure)
 
-BOOL
+VOID
 DTFind(
 	DIGITAL_TREE dt,
 	PCTSTR str,

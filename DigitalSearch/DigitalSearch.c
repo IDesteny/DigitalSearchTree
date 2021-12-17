@@ -108,7 +108,7 @@ DTInsert(
 	return EXIT_SUCCESS;
 }
 
-BOOL
+VOID
 DTFind(
 	DIGITAL_TREE dt,
 	PCTSTR str,
@@ -121,7 +121,7 @@ DTFind(
 	for (INT i = 0; i < size; ++i)
 	{
 		if (!root)
-			return EXIT_SUCCESS;
+			return;
 
 		if (root->data == str[i])
 			root = root->down;
@@ -138,7 +138,7 @@ DTFind(
 				{
 					root = root->next;
 					if (!root)
-						return EXIT_SUCCESS;
+						return;
 				}
 			}
 		}
@@ -152,5 +152,5 @@ DTFind(
 	else
 		*res = TRUE;
 
-	return EXIT_SUCCESS;
+	return;
 }
